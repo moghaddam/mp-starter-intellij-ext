@@ -31,6 +31,7 @@ import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
@@ -47,6 +48,7 @@ import org.jetbrains.idea.maven.project.MavenProjectsManager;
 import org.jetbrains.idea.maven.utils.actions.MavenActionUtil;
 import org.microshed.intellij.model.ModuleInitializationData;
 import org.microshed.intellij.wizard.MicroProfileSelectionStep;
+import org.microshed.intellij.wizard.MicroProfileStarterApiUrlStep;
 
 import javax.swing.*;
 import java.io.File;
@@ -107,7 +109,12 @@ public class MicroProfileModuleBuilder extends JavaModuleBuilder {
     @Nullable
     @Override
     public ModuleWizardStep getCustomOptionsStep(WizardContext context, Disposable parentDisposable) {
-        return new MicroProfileSelectionStep(moduleCreationData, context);
+        return new MicroProfileStarterApiUrlStep(moduleCreationData);
+    }
+
+    @Override
+    public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull ModulesProvider modulesProvider) {
+        return new ModuleWizardStep[] {new MicroProfileSelectionStep(moduleCreationData, wizardContext)};
     }
 
     /**
@@ -148,7 +155,7 @@ public class MicroProfileModuleBuilder extends JavaModuleBuilder {
             VirtualFile virtualFile = downloadStarterProjectZip(project, tempFolder);
             if (virtualFile == null) {
                 Messages.showErrorDialog(
-                        "Unable to download the initial MicroProfile project setup from " + STARTER_REST_BASE_URL +
+                        "Unable to download the initial MicroProfile project setup from " + moduleCreationData.getStarterUrl() +
                                 ". Check your network connection.", "");
                 return;
             }
@@ -200,7 +207,7 @@ public class MicroProfileModuleBuilder extends JavaModuleBuilder {
     }
 
     private VirtualFile downloadStarterProjectZip(Project project, File tempFolder) throws IOException {
-        String url = STARTER_REST_BASE_URL + "/api/3/project?" + moduleCreationData.toQueryString();
+        String url = moduleCreationData.getStarterUrl() + "/api/3/project?" + moduleCreationData.toQueryString();
         File file = FileUtil.createTempFile(tempFolder, "microprofile_starter_", "_download", true, true);
 
         final DownloadableFileService downloadService = DownloadableFileService.getInstance();

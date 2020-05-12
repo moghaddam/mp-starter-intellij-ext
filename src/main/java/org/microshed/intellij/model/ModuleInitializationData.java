@@ -20,6 +20,7 @@ package org.microshed.intellij.model;
 
 import com.intellij.openapi.projectRoots.Sdk;
 
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -28,6 +29,9 @@ import java.util.List;
  * @author Ehsan Zaery Moghaddam (zaerymoghaddam@gmail.com)
  */
 public class ModuleInitializationData {
+
+    private URL starterUrl;
+
     private String groupId;
     private String artifactId;
     private String mpVersion;
@@ -82,6 +86,14 @@ public class ModuleInitializationData {
 
     public void setMpSpecs(List<String> mpSpecs) {
         this.mpSpecs = mpSpecs;
+    }
+
+    public URL getStarterUrl() {
+        return starterUrl;
+    }
+
+    public void setStarterUrl(URL starterUrl) {
+        this.starterUrl = starterUrl;
     }
 
     /**

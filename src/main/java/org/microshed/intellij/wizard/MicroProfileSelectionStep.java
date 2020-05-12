@@ -114,7 +114,7 @@ public class MicroProfileSelectionStep extends ModuleWizardStep {
         topPanel.add(new LabeledComponent("ArtifactId", artifactIdTextField), topPanelLayoutConstraint);
 
 
-        mpVersionsComboBox = new ComboBox<String>(specMatrix.getConfigs().keySet().toArray(new String[0]));
+        mpVersionsComboBox = new ComboBox<>(specMatrix.getConfigs().keySet().toArray(new String[0]));
         mpVersionsComboBox.setRenderer(new MPVersionComboBoxRenderer());
         mpVersionsComboBox.addItemListener(event -> {
             if (event.getStateChange() == ItemEvent.SELECTED) {
@@ -135,7 +135,7 @@ public class MicroProfileSelectionStep extends ModuleWizardStep {
         topPanel.add(new LabeledComponent("MicroProfile Versions", mpVersionsComboBox), topPanelLayoutConstraint);
 
 
-        mpServersComboBox = new ComboBox<String>(specMatrix.getConfigs().get(mpVersionsComboBox.getItemAt(mpVersionsComboBox.getSelectedIndex()))
+        mpServersComboBox = new ComboBox<>(specMatrix.getConfigs().get(mpVersionsComboBox.getItemAt(mpVersionsComboBox.getSelectedIndex()))
                 .getSupportedServers().toArray(new String[0]));
         mpServersComboBox.setRenderer(new MPServerComboBoxRenderer());
 
@@ -165,7 +165,7 @@ public class MicroProfileSelectionStep extends ModuleWizardStep {
         mpSpecsCheckboxTree.addTreeSelectionListener(e -> {
             if((e.getNewLeadSelectionPath() != null) && (e.getNewLeadSelectionPath().getLastPathComponent() != null)) {
                 CheckedTreeNode node = (CheckedTreeNode) e.getNewLeadSelectionPath().getLastPathComponent();
-                if ((node.getUserObject() != null) && (node.getUserObject() instanceof MicroProfileSpec)) {
+                if (node.getUserObject() instanceof MicroProfileSpec) {
                     String description = ((MicroProfileSpec) node.getUserObject()).getDescription();
                     specDescriptionLabel.setText(StringUtils.capitalize(description));
                 }
@@ -192,9 +192,6 @@ public class MicroProfileSelectionStep extends ModuleWizardStep {
 
     /**
      * Fetches the specification matrix and maps them to an instance of {@link SpecMatrix}.
-     * <p>
-     * TODO: Consider downloading the spec in an asynchronous way and then update the UI. In case of slow internet connection, this slows down the
-     * initialization of the new project wizard window.
      */
     private void initializeSpecMatrix() {
         ObjectMapper mapper = new ObjectMapper();
